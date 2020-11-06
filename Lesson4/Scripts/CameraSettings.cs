@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CameraSettings : MonoBehaviour
 {
@@ -21,9 +20,6 @@ public class CameraSettings : MonoBehaviour
 
     private float yCoordinate;
     private float cameraDistance;
-    private float _waitTime = 0f;
-    private float _currentTime;
-    private bool isCooldown = false;
 
     #endregion
 
@@ -51,22 +47,15 @@ public class CameraSettings : MonoBehaviour
 
         var currentPlayerPosition = new Vector3(_target.position.x, yCoordinate, _target.position.z);
         transform.LookAt(currentPlayerPosition);
+        
+        
+        var deltaRotation = Mathf.Round(transform.transform.eulerAngles.y - _target.transform.eulerAngles.y);
 
-        if (!isCooldown)
-        {
-            _currentTime -= Time.deltaTime;
-            if (_currentTime <= 0)
-            {
-                _currentTime = _waitTime;
+        var rotationDirection = deltaRotation / Mathf.Abs(deltaRotation);
 
-                var deltaRotation = Mathf.Round(transform.transform.eulerAngles.y - _target.transform.eulerAngles.y);
-
-                var rotationDirection = deltaRotation / Mathf.Abs(deltaRotation);
-
-                float deltaAngle = Quaternion.Angle(_target.rotation, transform.rotation);
-                RotateCameraFollowTarget(rotationDirection, deltaAngle);
-            }
-        }
+        float deltaAngle = Quaternion.Angle(_target.rotation, transform.rotation);
+        RotateCameraFollowTarget(rotationDirection, deltaAngle);
+        
 
         distanceToPlayer = currentPlayerPosition - transform.position;
 
