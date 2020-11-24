@@ -17,6 +17,16 @@ namespace HomeworksUnityLevel1
         #endregion
 
 
+        #region Properties
+
+        public int Sounds
+        {
+            get { return _sounds.Length; }
+        }
+
+        #endregion
+
+
         #region UnityMethods
 
         private void Start()

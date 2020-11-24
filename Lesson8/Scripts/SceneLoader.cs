@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 
 namespace HomeworksUnityLevel1
@@ -13,8 +14,12 @@ namespace HomeworksUnityLevel1
         #region Fields
 
         [SerializeField] private Canvas _menu;
-        [SerializeField] private Canvas _settings;
+        [SerializeField] private Canvas _qualitySettings;
+        [SerializeField] private GameObject _audioSettings;
+        [SerializeField] private AudioMixer _audioMixer;
 
+        private Button _audioSettingsButton;
+        private Slider _audioSettingsSlider;
         private Text _qualityIdentifier;
         private Dropdown _levelRDropdown;
 
@@ -28,19 +33,20 @@ namespace HomeworksUnityLevel1
 
         private void Start()
         {
-            _settings.enabled = false;
-            _qualityIdentifier = _settings.GetComponentInChildren<Text>();
+            _qualitySettings.enabled = false;
+            _qualityIdentifier = _qualitySettings.GetComponentInChildren<Text>();
 
             _levelRDropdown = _menu.GetComponentInChildren<Dropdown>();
             _sceneIndex = _levelRDropdown.value + 1;
+
+            _audioSettingsButton = _audioSettings.GetComponent<Button>();
+            _audioSettingsSlider = _audioSettings.GetComponentInChildren<Slider>();
         }
 
         private void Update()
         {
             _currenQualityLevel = QualitySettings.GetQualityLevel();
             _qualityIdentifier.text = $"Current quality level: {_currenQualityLevel}";
-
-            Debug.Log(_sceneIndex);
         }
 
         #endregion
@@ -57,7 +63,7 @@ namespace HomeworksUnityLevel1
         public void ChangeSettings()
         {
             _menu.enabled = false;
-            _settings.enabled = true;
+            _qualitySettings.enabled = true;
             _currenQualityLevel = QualitySettings.GetQualityLevel();
             _qualityIdentifier.text = $"Current quality level: {_currenQualityLevel+1}";
         }
@@ -65,7 +71,7 @@ namespace HomeworksUnityLevel1
         public void ExitSettings()
         {
             _menu.enabled = true;
-            _settings.enabled = false;
+            _qualitySettings.enabled = false;
         }
 
         public void SetQualityLevel(int value)
@@ -76,6 +82,16 @@ namespace HomeworksUnityLevel1
         public void LoadLevelIndexUpdate()
         {
             _sceneIndex = _levelRDropdown.value + 1;
+        }
+
+        public void SoundSettings()
+        {
+            _audioSettingsSlider.gameObject.SetActive(true);
+        }
+
+        public void ChangeVolume()
+        {
+            //todo
         }
 
         public void ExitGame()

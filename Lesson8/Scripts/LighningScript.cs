@@ -11,15 +11,16 @@ namespace HomeworksUnityLevel1
 
         #region Fields
 
+
         private Light _lightSource;
+        private Animator _lightAnimator;
+        private AudioSourceChanger _lightningAudio;
 
         private float _lightningMaxCooldown = 10.0f;
         private float _lightningCooldown;
-        private float _lightningLenght = 100.0f;
-        private float _lightningScale;
         private float _currentTime;
-        private float _currentLightningLenghtTime;
-        private bool _isLighningCooldown;
+        private int _lightningExample = 0;
+        private int _lightningAmount = 3;
 
         #endregion
 
@@ -29,9 +30,11 @@ namespace HomeworksUnityLevel1
         private void Start()
         {
             _lightSource = GetComponent<Light>();
-            _lightningMaxCooldown = Random.Range(5.0f, 10.0f);
-            _lightningCooldown = Random.Range(0, _lightningMaxCooldown);
-            _currentLightningLenghtTime = 0.01f;
+            _lightAnimator = GetComponent<Animator>();
+            _lightningAudio = GetComponent<AudioSourceChanger>();
+            _lightningMaxCooldown = SetLightningMaxCooldown();
+            _lightningCooldown = SetLightningCooldown();
+            _lightningExample = Random.Range(_lightningExample, _lightningAmount);
         }
 
         private void Update()
@@ -40,34 +43,31 @@ namespace HomeworksUnityLevel1
 
             if (_currentTime <= 0)
             {
+                _lightAnimator.SetInteger("LightningExample", _lightningExample);
+                _lightAnimator.SetTrigger("Lightning");
                 _currentTime = _lightningCooldown;
-                _isLighningCooldown = false;
-                _lightSource.intensity = 0.1f;
-            }
-            else
-            {
-                _isLighningCooldown = true;
-                _lightningMaxCooldown = Random.Range(0, 20.0f);
-                _lightningCooldown = Random.Range(0, _lightningMaxCooldown);
-            }
 
-            if (!_isLighningCooldown)
-            {
-                if (_currentLightningLenghtTime <= _lightningLenght)
-                {
-                    _lightningScale = Random.Range(0.7f, 1.0f);
-                    _lightSource.intensity = _lightningScale;
-                    _currentLightningLenghtTime++;
-                }
-                else
-                {
-                    _currentLightningLenghtTime = 0.1f;
-                }
+                _lightningMaxCooldown = SetLightningMaxCooldown();
+                _lightningExample = Random.Range(0, _lightningAmount);
+                _lightningCooldown = SetLightningCooldown();
+
+                _lightningAudio.PlayHitSound(Random.Range(0, _lightningAudio.Sounds));
             }
-            else
-            {
-                _lightSource.intensity = 0.1f;
-            }
+        }
+
+        #endregion
+
+
+        #region Methods
+
+        private float SetLightningMaxCooldown()
+        {
+            return Random.Range(2.0f, 40.0f);
+        }
+
+        private float SetLightningCooldown()
+        {
+            return Random.Range(1.0f, _lightningMaxCooldown);
         }
 
         #endregion
