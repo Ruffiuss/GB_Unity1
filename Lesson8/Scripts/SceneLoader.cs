@@ -25,6 +25,7 @@ namespace HomeworksUnityLevel1
 
         private int _sceneIndex;
         private int _currenQualityLevel;
+        private bool _isActivated = false;
 
         #endregion
 
@@ -41,6 +42,9 @@ namespace HomeworksUnityLevel1
 
             _audioSettingsButton = _audioSettings.GetComponent<Button>();
             _audioSettingsSlider = _audioSettings.GetComponentInChildren<Slider>();
+            _audioSettingsSlider.gameObject.SetActive(false);
+            _audioMixer.GetFloat("masterVolume", out var volume);
+            _audioSettingsSlider.value = volume;
         }
 
         private void Update()
@@ -86,12 +90,29 @@ namespace HomeworksUnityLevel1
 
         public void SoundSettings()
         {
-            _audioSettingsSlider.gameObject.SetActive(true);
+            if (!_isActivated)
+            {
+                _audioSettingsSlider.gameObject.SetActive(true);
+                _isActivated = true;
+            }
+            else
+            {
+                _audioSettingsSlider.gameObject.SetActive(false);
+                _isActivated = false;
+            }
         }
 
         public void ChangeVolume()
         {
-            //todo
+            if (_audioSettingsSlider.value > -21.0f)
+            {
+                _audioMixer.SetFloat("masterVolume", _audioSettingsSlider.value);
+            }
+            else
+            {
+
+                _audioMixer.SetFloat("masterVolume", -80.0f);
+            }
         }
 
         public void ExitGame()
